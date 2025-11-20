@@ -10,11 +10,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import logo from "@/assets/fluxora-logo.png";
 
 const historyItems = [
   { id: 1, title: "Cyberpunk cityscape", time: "2 hours ago" },
@@ -26,14 +26,17 @@ const historyItems = [
 export function AppSidebar() {
   return (
     <Sidebar className="border-r border-sidebar-border bg-sidebar">
-      <div className="p-4 border-b border-sidebar-border">
+      <SidebarHeader className="border-b border-sidebar-border p-6">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Fluxora" className="w-10 h-10" />
-          <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Fluxora
-          </span>
+          <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-glow">
+            <Sparkles className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-foreground">Fluxora</span>
+            <span className="text-xs text-muted-foreground">AI Studio</span>
+          </div>
         </div>
-      </div>
+      </SidebarHeader>
 
       <SidebarContent>
         <div className="p-3">
