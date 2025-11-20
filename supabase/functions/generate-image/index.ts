@@ -37,43 +37,63 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Subscribe to the fal.ai API
-    const response = await fetch('https://queue.fal.run/fal-ai/bria/fibo/subscribe', {
+    // Submit request to fal.ai queue
+    const submitResponse = await fetch('https://queue.fal.run/bria/fibo/generate', {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        input: {
-          prompt: prompt,
-        },
-        logs: true,
+        prompt: prompt,
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Fal.ai API error:', response.status, errorText);
-      throw new Error(`Fal.ai API error: ${response.status}`);
+    if (!submitResponse.ok) {
+      const errorText = await submitResponse.text();
+      console.error('Fal.ai submit error:', submitResponse.status, errorText);
+      throw new Error(`Fal.ai API error: ${submitResponse.status}`);
     }
 
-    const result = await response.json();
-    console.log("Image generated successfully");
-    console.log("Result:", JSON.stringify(result));
+    const submitResult = await submitResponse.json();
+    const requestId = submitResult.request_id;
+    const responseUrl = submitResult.response_url;
+    
+    console.log('Request submitted, polling for result...');
 
-    // Extract image URLs from the result
-    const images = result.images || result.data?.images || [];
+    // Poll for result
+    let attempts = 0;
+    const maxAttempts = 60; // 60 attempts * 2 seconds = 2 minutes max
+    
+    while (attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+      
+      const resultResponse = await fetch(responseUrl, {
+        headers: {
+          'Authorization': `Key ${FAL_KEY}`,
+        },
+      });
 
-    return new Response(
-      JSON.stringify({ 
-        images: images,
-        requestId: result.request_id || result.requestId 
-      }), 
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      if (resultResponse.status === 200) {
+        const result = await resultResponse.json();
+        console.log("Image generated successfully");
+        
+        return new Response(
+          JSON.stringify({ 
+            images: result.images || [],
+            requestId: requestId 
+          }), 
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
       }
-    );
+      
+      attempts++;
+    }
+
+    throw new Error('Request timed out after 2 minutes');
+
   } catch (error) {
     console.error('Error in generate-image function:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to generate image';
