@@ -5,18 +5,24 @@ import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          {/* Mobile Header */}
-          <header className="lg:hidden flex items-center gap-3 p-4 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-            <SidebarTrigger className="hover:bg-accent transition-colors">
+          {/* Header with Sidebar Toggle */}
+          <header className="sticky top-0 z-40 flex items-center gap-3 h-16 px-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg p-2">
               <Menu className="h-5 w-5" />
             </SidebarTrigger>
-            <span className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Fluxora
-            </span>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
+                Fluxora AI Studio
+              </h2>
+            </div>
+            <div className="text-xs text-muted-foreground hidden sm:flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              <span>Ready to create</span>
+            </div>
           </header>
           
           {/* Main Content */}
@@ -30,3 +36,4 @@ const MainLayout = () => {
 };
 
 export default MainLayout;
+

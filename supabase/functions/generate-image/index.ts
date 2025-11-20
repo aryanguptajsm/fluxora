@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { HfInference } from "https://esm.sh/@huggingface/inference@2.8.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,9 +24,9 @@ serve(async (req) => {
       );
     }
 
-    const FAL_KEY = Deno.env.get('FAL_KEY');
-    if (!FAL_KEY) {
-      console.error('FAL_KEY is not configured');
+    const HF_TOKEN = Deno.env.get('HF_TOKEN');
+    if (!HF_TOKEN) {
+      console.error('HF_TOKEN is not configured');
       return new Response(
         JSON.stringify({ error: 'API key not configured' }), 
         { 
@@ -37,63 +38,31 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Submit request to fal.ai queue
-    const submitResponse = await fetch('https://queue.fal.run/bria/fibo/generate', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Key ${FAL_KEY}`,
-        'Content-Type': 'application/json',
+    const client = new HfInference(HF_TOKEN);
+    
+    const image = await client.textToImage({
+      model: "black-forest-labs/FLUX.1-schnell",
+      inputs: prompt,
+      parameters: {
+        num_inference_steps: 4,
       },
-      body: JSON.stringify({
-        prompt: prompt,
-      }),
     });
 
-    if (!submitResponse.ok) {
-      const errorText = await submitResponse.text();
-      console.error('Fal.ai submit error:', submitResponse.status, errorText);
-      throw new Error(`Fal.ai API error: ${submitResponse.status}`);
-    }
+    console.log("Image generated successfully");
 
-    const submitResult = await submitResponse.json();
-    const requestId = submitResult.request_id;
-    const responseUrl = submitResult.response_url;
-    
-    console.log('Request submitted, polling for result...');
+    // Convert blob to base64
+    const arrayBuffer = await image.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    const imageUrl = `data:image/png;base64,${base64}`;
 
-    // Poll for result
-    let attempts = 0;
-    const maxAttempts = 60; // 60 attempts * 2 seconds = 2 minutes max
-    
-    while (attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
-      
-      const resultResponse = await fetch(responseUrl, {
-        headers: {
-          'Authorization': `Key ${FAL_KEY}`,
-        },
-      });
-
-      if (resultResponse.status === 200) {
-        const result = await resultResponse.json();
-        console.log("Image generated successfully");
-        
-        return new Response(
-          JSON.stringify({ 
-            images: result.images || [],
-            requestId: requestId 
-          }), 
-          { 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
+    return new Response(
+      JSON.stringify({ 
+        images: [{ url: imageUrl }]
+      }), 
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
-      
-      attempts++;
-    }
-
-    throw new Error('Request timed out after 2 minutes');
-
+    );
   } catch (error) {
     console.error('Error in generate-image function:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to generate image';

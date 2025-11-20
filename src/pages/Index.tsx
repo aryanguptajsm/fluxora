@@ -52,20 +52,21 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Header */}
       <header className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 bg-gradient-hero opacity-20"></div>
-        <div className="relative container mx-auto px-4 py-20 text-center">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-card border border-primary/30 mb-8 shadow-glow">
+        <div className="absolute inset-0 bg-gradient-hero opacity-10"></div>
+        <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
+          <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-card border border-primary/40 mb-8 shadow-glow backdrop-blur-sm hover:border-primary/60 transition-all">
             <Wand2 className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-semibold text-primary">AI-Powered Image Generation</span>
+            <span className="text-sm font-semibold bg-gradient-primary bg-clip-text text-transparent">Powered by FLUX.1-Schnell</span>
           </div>
-          <h1 className="text-6xl md:text-8xl font-extrabold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight">
+          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight tracking-tight">
             Fluxora Studio
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-4 leading-relaxed">
-            Transform your imagination into stunning visuals with cutting-edge AI technology
+          <p className="text-lg md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-3 leading-relaxed">
+            Transform your imagination into stunning visuals with AI
           </p>
-          <p className="text-sm text-muted-foreground/80">
-            Powered by Bria FIBO AI Model
+          <p className="text-sm text-muted-foreground/70 flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            Lightning-fast generation • Professional quality
           </p>
         </div>
       </header>
@@ -73,41 +74,59 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Prompt Input Section */}
-        <Card className="p-8 md:p-10 mb-16 bg-card border-primary/20 shadow-card relative overflow-hidden">
+        <Card className="p-6 md:p-10 mb-12 bg-card border-primary/30 shadow-card relative overflow-hidden hover:shadow-accent-glow transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-accent opacity-5"></div>
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-primary opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
           <div className="relative space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-glow">
-                <ImageIcon className="h-5 w-5 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow">
+                <ImageIcon className="h-6 w-6 text-primary-foreground" />
               </div>
-              <label className="text-lg font-semibold text-foreground">
-                Describe Your Vision
-              </label>
+              <div>
+                <label className="text-xl font-bold text-foreground block">
+                  Describe Your Vision
+                </label>
+                <p className="text-sm text-muted-foreground">Be as detailed as you like</p>
+              </div>
             </div>
             <Textarea
-              placeholder="A majestic lion made of golden light, standing on a mountain peak at sunset, ethereal and powerful..."
+              placeholder="A majestic golden lion standing on a mountain peak at sunset, digital art style, cinematic lighting, highly detailed..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              className="min-h-[140px] resize-none bg-background border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base"
+              className="min-h-[160px] resize-none bg-background/70 border-border hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base leading-relaxed"
             />
-            <Button
-              onClick={handleGenerate}
-              disabled={!prompt.trim() || isGenerating}
-              className="w-full md:w-auto bg-gradient-primary hover:opacity-90 transition-all shadow-glow hover:shadow-accent-glow disabled:opacity-50 text-base font-semibold px-8"
-              size="lg"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Creating Magic...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-5 w-5" />
-                  Generate Image
-                </>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={handleGenerate}
+                disabled={!prompt.trim() || isGenerating}
+                className="flex-1 md:flex-initial bg-gradient-primary hover:opacity-90 transition-all shadow-glow hover:shadow-accent-glow disabled:opacity-50 text-base font-bold px-10 h-12"
+                size="lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Creating Magic...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-5 w-5" />
+                    Generate Image
+                  </>
+                )}
+              </Button>
+              {generatedImages.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setGeneratedImages([]);
+                    setPrompt("");
+                  }}
+                  className="border-primary/30 hover:bg-primary/10"
+                >
+                  Clear All
+                </Button>
               )}
-            </Button>
+            </div>
           </div>
         </Card>
 
@@ -126,32 +145,39 @@ const Index = () => {
         {/* Generated Images Grid */}
         {generatedImages.length > 0 && !isGenerating && (
           <div className="animate-fade-in">
-            <h2 className="text-3xl font-bold mb-8 text-foreground flex items-center gap-3">
-              <div className="w-1 h-8 bg-gradient-primary rounded-full"></div>
-              Your Creations
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                <div className="w-1.5 h-8 bg-gradient-primary rounded-full"></div>
+                Your Creations
+                <span className="text-sm font-normal text-muted-foreground">({generatedImages.length})</span>
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
               {generatedImages.map((image, index) => (
                 <Card
                   key={index}
                   className="overflow-hidden group hover:shadow-accent-glow transition-all duration-500 border-primary/30 bg-card"
                 >
-                  <div className="relative aspect-square bg-muted">
+                  <div className="relative aspect-square bg-muted/30">
                     <img
                       src={image.url}
                       alt={`Generated ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6">
-                      <Button
-                        onClick={() => handleDownload(image.url, index)}
-                        variant="secondary"
-                        size="lg"
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow font-semibold"
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        Download
-                      </Button>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6">
+                      <div className="flex gap-3 w-full">
+                        <Button
+                          onClick={() => handleDownload(image.url, index)}
+                          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow font-semibold"
+                          size="lg"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border">
+                      <span className="text-xs font-medium text-foreground">#{index + 1}</span>
                     </div>
                   </div>
                 </Card>
@@ -206,16 +232,25 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border mt-32 py-12 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <Wand2 className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold text-foreground">Fluxora</span>
+              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-glow">
+                <Wand2 className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <div>
+                <span className="text-lg font-bold text-foreground block">Fluxora</span>
+                <span className="text-xs text-muted-foreground">AI Image Studio</span>
+              </div>
             </div>
             <div className="text-center text-sm text-muted-foreground">
-              © 2024 Fluxora. Powered by Bria FIBO AI Technology.
+              <p>© 2024 Fluxora. Powered by FLUX.1-Schnell Technology.</p>
+              <p className="text-xs mt-1">Create stunning images with lightning-fast AI</p>
             </div>
-            <div className="text-sm text-muted-foreground">
-              Create • Imagine • Inspire
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                Active
+              </span>
             </div>
           </div>
         </div>
