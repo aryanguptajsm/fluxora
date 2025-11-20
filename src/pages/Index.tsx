@@ -9,7 +9,7 @@ import { toast } from "sonner";
 const Index = () => {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedImages, setGeneratedImages] = useState<Array<{ url: string }>>([]);
+  const [generatedImages, setGeneratedImages] = useState<Array<{ url: string; prompt: string; timestamp: number }>>([]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -26,7 +26,12 @@ const Index = () => {
       if (error) throw error;
 
       if (data?.images) {
-        setGeneratedImages(Array.isArray(data.images) ? data.images : [data.images]);
+        const newImages = (Array.isArray(data.images) ? data.images : [data.images]).map(img => ({
+          ...img,
+          prompt: prompt,
+          timestamp: Date.now()
+        }));
+        setGeneratedImages(prev => [...newImages, ...prev]);
         toast.success("Image generated successfully!");
       } else {
         throw new Error("No images returned");
@@ -243,7 +248,7 @@ const Index = () => {
               </div>
             </div>
             <div className="text-center text-sm text-muted-foreground">
-              <p>© 2024 Fluxora. Powered by FLUX.1-Schnell Technology.</p>
+              <p>© 2025 Fluxora. Powered by FLUX.1-Schnell Technology.</p>
               <p className="text-xs mt-1">Create stunning images with lightning-fast AI</p>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">

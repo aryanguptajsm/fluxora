@@ -40,6 +40,7 @@ serve(async (req) => {
 
     const client = new HfInference(HF_TOKEN);
     
+    // Generate image using the new router endpoint
     const image = await client.textToImage({
       model: "black-forest-labs/FLUX.1-schnell",
       inputs: prompt,

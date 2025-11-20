@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const root = window.document.documentElement;
-    const initialTheme = localStorage.getItem("theme") as "light" | "dark" || "light";
+    const initialTheme = localStorage.getItem("theme") as "light" | "dark" || "dark";
     setTheme(initialTheme);
     root.classList.toggle("dark", initialTheme === "dark");
   }, []);
@@ -19,18 +21,24 @@ export function ThemeToggle() {
     window.document.documentElement.classList.toggle("dark");
   };
 
+  if (!mounted) {
+    return <Button variant="ghost" size="icon" className="h-9 w-9" />;
+  }
+
   return (
     <Button
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="hover:bg-sidebar-accent transition-all duration-300"
+      className="h-9 w-9 hover:bg-sidebar-accent transition-colors"
     >
-      {theme === "light" ? (
-        <Moon className="h-5 w-5 text-sidebar-foreground" />
+      {theme === "dark" ? (
+        <Sun className="h-4 w-4 text-sidebar-foreground" />
       ) : (
-        <Sun className="h-5 w-5 text-sidebar-foreground" />
+        <Moon className="h-4 w-4 text-sidebar-foreground" />
       )}
+      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 }
+
