@@ -61,16 +61,16 @@ const Index = () => {
         <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-card border border-primary/40 mb-8 shadow-glow backdrop-blur-sm hover:border-primary/60 transition-all">
             <Wand2 className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-semibold bg-gradient-primary bg-clip-text text-transparent">Powered by FLUX.1-Schnell</span>
+            <span className="text-sm font-bold bg-gradient-primary bg-clip-text text-transparent tracking-wide">Powered by FLUX.1-Schnell</span>
           </div>
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight tracking-tight">
             Fluxora Studio
           </h1>
-          <p className="text-lg md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-3 leading-relaxed">
+          <p className="text-lg md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-3 leading-relaxed font-light">
             Transform your imagination into stunning visuals with AI
           </p>
-          <p className="text-sm text-muted-foreground/70 flex items-center justify-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <p className="text-sm text-muted-foreground/70 flex items-center justify-center gap-2 font-medium">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-glow"></span>
             Lightning-fast generation • Professional quality
           </p>
         </div>
@@ -84,27 +84,27 @@ const Index = () => {
           <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-primary opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
           <div className="relative space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow">
-                <ImageIcon className="h-6 w-6 text-primary-foreground" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-glow">
+                <ImageIcon className="h-7 w-7 text-primary-foreground" />
               </div>
               <div>
-                <label className="text-xl font-bold text-foreground block">
+                <label className="text-2xl font-bold text-foreground block tracking-tight">
                   Describe Your Vision
                 </label>
-                <p className="text-sm text-muted-foreground">Be as detailed as you like</p>
+                <p className="text-sm text-muted-foreground font-medium">Be as detailed as you like</p>
               </div>
             </div>
             <Textarea
               placeholder="A majestic golden lion standing on a mountain peak at sunset, digital art style, cinematic lighting, highly detailed..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              className="min-h-[160px] resize-none bg-background/70 border-border hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base leading-relaxed"
+              className="min-h-[160px] resize-none bg-background/70 border-border hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base leading-relaxed font-medium"
             />
             <div className="flex items-center gap-4">
               <Button
                 onClick={handleGenerate}
                 disabled={!prompt.trim() || isGenerating}
-                className="flex-1 md:flex-initial bg-gradient-primary hover:opacity-90 transition-all shadow-glow hover:shadow-accent-glow disabled:opacity-50 text-base font-bold px-10 h-12"
+                className="flex-1 md:flex-initial bg-gradient-primary hover:opacity-90 transition-all shadow-glow hover:shadow-accent-glow disabled:opacity-50 text-base font-bold px-12 h-14 rounded-xl"
                 size="lg"
               >
                 {isGenerating ? (
@@ -126,7 +126,7 @@ const Index = () => {
                     setGeneratedImages([]);
                     setPrompt("");
                   }}
-                  className="border-primary/30 hover:bg-primary/10"
+                  className="border-primary/30 hover:bg-primary/10 font-semibold h-14 rounded-xl"
                 >
                   Clear All
                 </Button>
