@@ -3,14 +3,16 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Menu, LogIn } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const MainLayout = () => {
   const navigate = useNavigate();
+  const [historyItems, setHistoryItems] = useState<Array<{ id: number; title: string; time: string; prompt?: string }>>([]);
 
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar />
+        <AppSidebar historyItems={historyItems} />
         <div className="flex-1 flex flex-col">
           {/* Header with Sidebar Toggle */}
           <header className="sticky top-0 z-40 flex items-center gap-3 h-16 px-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
