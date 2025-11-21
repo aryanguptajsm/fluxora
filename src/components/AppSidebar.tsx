@@ -1,4 +1,4 @@
-import { Plus, History, Sparkles, LogIn } from "lucide-react";
+import { Plus, History, Sparkles } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -47,22 +47,13 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <div className="p-3 space-y-2">
+        <div className="p-3">
           <Button 
             className={`w-full bg-gradient-primary hover:opacity-90 transition-all shadow-glow ${isCollapsed ? 'px-0 justify-center' : ''}`}
             onClick={() => window.location.reload()}
           >
             <Plus className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
             {!isCollapsed && <span className="font-medium">New Chat</span>}
-          </Button>
-          
-          <Button 
-            variant="outline"
-            className={`w-full border-primary/30 hover:bg-primary/10 transition-all ${isCollapsed ? 'px-0 justify-center' : ''}`}
-            onClick={() => navigate('/auth')}
-          >
-            <LogIn className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
-            {!isCollapsed && <span className="font-medium">Sign In</span>}
           </Button>
         </div>
 
