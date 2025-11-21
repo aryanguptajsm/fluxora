@@ -5,14 +5,49 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
+interface HistoryItem {
+  id: number;
+  title: string;
+  time: string;
+  prompt: string;
+  images: Array<{ url: string; prompt: string; timestamp: number }>;
+}
+
 const MainLayout = () => {
   const navigate = useNavigate();
-  const [historyItems, setHistoryItems] = useState<Array<{ id: number; title: string; time: string; prompt?: string }>>([]);
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [currentHistoryId, setCurrentHistoryId] = useState<number | null>(null);
+
+  const saveToHistory = (images: Array<{ url: string; prompt: string; timestamp: number }>, prompt: string) => {
+    const newId = Date.now();
+    const newItem: HistoryItem = {
+      id: newId,
+      title: prompt.substring(0, 30) + (prompt.length > 30 ? '...' : ''),
+      time: 'Just now',
+      prompt,
+      images
+    };
+    setHistoryItems(prev => [newItem, ...prev]);
+    setCurrentHistoryId(newId);
+  };
+
+  const loadFromHistory = (historyId: number) => {
+    setCurrentHistoryId(historyId);
+  };
+
+  const startNewChat = () => {
+    setCurrentHistoryId(null);
+  };
 
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar historyItems={historyItems} />
+        <AppSidebar 
+          historyItems={historyItems} 
+          onHistoryClick={loadFromHistory}
+          onNewChat={startNewChat}
+          currentHistoryId={currentHistoryId}
+        />
         <div className="flex-1 flex flex-col">
           {/* Header with Sidebar Toggle */}
           <header className="sticky top-0 z-40 flex items-center gap-3 h-16 px-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,7 +75,7 @@ const MainLayout = () => {
           
           {/* Main Content */}
           <main className="flex-1">
-            <Outlet />
+            <Outlet context={{ saveToHistory, loadFromHistory: loadFromHistory, currentHistoryId, historyItems }} />
           </main>
         </div>
       </div>
