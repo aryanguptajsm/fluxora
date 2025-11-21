@@ -33,13 +33,13 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-r border-sidebar-border bg-sidebar" collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-glow flex-shrink-0">
+        <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
+          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow flex-shrink-0">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-foreground">Fluxora</span>
+              <span className="text-xl font-bold text-foreground tracking-tight">Fluxora</span>
               <span className="text-xs text-muted-foreground">AI Studio</span>
             </div>
           )}
@@ -49,25 +49,25 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="p-3 space-y-2">
           <Button 
-            className="w-full bg-gradient-primary hover:opacity-90 transition-opacity shadow-glow"
+            className={`w-full bg-gradient-primary hover:opacity-90 transition-all shadow-glow ${isCollapsed ? 'px-0 justify-center' : ''}`}
             onClick={() => window.location.reload()}
           >
             <Plus className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
-            {!isCollapsed && <span>New Chat</span>}
+            {!isCollapsed && <span className="font-medium">New Chat</span>}
           </Button>
           
           <Button 
             variant="outline"
-            className="w-full border-primary/30 hover:bg-primary/10"
+            className={`w-full border-primary/30 hover:bg-primary/10 transition-all ${isCollapsed ? 'px-0 justify-center' : ''}`}
             onClick={() => navigate('/auth')}
           >
             <LogIn className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
-            {!isCollapsed && <span>Sign In</span>}
+            {!isCollapsed && <span className="font-medium">Sign In</span>}
           </Button>
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wider text-muted-foreground px-3">
+          <SidebarGroupLabel className={`text-xs uppercase tracking-wider text-muted-foreground px-3 ${isCollapsed ? 'justify-center' : ''}`}>
             <History className={`h-3 w-3 inline ${!isCollapsed ? 'mr-2' : ''}`} />
             {!isCollapsed && <span>Recent</span>}
           </SidebarGroupLabel>
@@ -76,8 +76,8 @@ export function AppSidebar() {
               <SidebarMenu>
                 {historyItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton asChild className="hover:bg-sidebar-accent transition-colors">
-                      <button className="w-full text-left">
+                    <SidebarMenuButton asChild className="hover:bg-sidebar-accent transition-all">
+                      <button className={`w-full text-left ${isCollapsed ? 'justify-center px-0' : ''}`}>
                         <Sparkles className={`h-4 w-4 text-primary flex-shrink-0 ${!isCollapsed ? 'mr-2' : ''}`} />
                         {!isCollapsed && (
                           <div className="flex-1 min-w-0">
@@ -98,8 +98,8 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border p-4">
-        <div className="flex items-center justify-between">
-          {!isCollapsed && <span className="text-xs text-muted-foreground">Theme</span>}
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+          {!isCollapsed && <span className="text-xs text-muted-foreground font-medium">Theme</span>}
           <ThemeToggle />
         </div>
       </SidebarFooter>
