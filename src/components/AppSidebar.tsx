@@ -22,26 +22,20 @@ interface HistoryItem {
   id: number;
   title: string;
   time: string;
-  prompt?: string;
+  prompt: string;
+  images: Array<{ url: string; prompt: string; timestamp: number }>;
 }
 
 interface AppSidebarProps {
   historyItems?: HistoryItem[];
+  onHistoryClick?: (id: number) => void;
+  onNewChat?: () => void;
+  currentHistoryId?: number | null;
 }
 
-export function AppSidebar({ historyItems = [] }: AppSidebarProps) {
+export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, currentHistoryId }: AppSidebarProps) {
   const { state } = useSidebar();
-  const navigate = useNavigate();
   const isCollapsed = state === "collapsed";
-
-  // Default history items if none provided
-  const defaultHistory: HistoryItem[] = [
-    { id: 1, title: "Golden lion at sunset", time: "2 hours ago", prompt: "A majestic golden lion at sunset" },
-    { id: 2, title: "Futuristic city lights", time: "5 hours ago", prompt: "Futuristic city with neon lights" },
-    { id: 3, title: "Abstract digital art", time: "1 day ago", prompt: "Abstract digital art composition" },
-  ];
-
-  const displayHistory = historyItems.length > 0 ? historyItems : defaultHistory;
 
   return (
     <Sidebar className="border-r border-sidebar-border bg-sidebar" collapsible="icon">
@@ -63,7 +57,7 @@ export function AppSidebar({ historyItems = [] }: AppSidebarProps) {
         <div className="p-3">
           <Button 
             className={`w-full bg-gradient-primary hover:opacity-90 transition-all shadow-glow ${isCollapsed ? 'px-0 justify-center' : ''}`}
-            onClick={() => window.location.reload()}
+            onClick={onNewChat}
           >
             <Plus className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
             {!isCollapsed && <span className="font-medium">New Chat</span>}
@@ -77,32 +71,37 @@ export function AppSidebar({ historyItems = [] }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <ScrollArea className="h-[400px]">
-              {displayHistory.length === 0 ? (
+              {historyItems.length === 0 ? (
                 <div className="px-3 py-8 text-center">
                   <p className="text-xs text-muted-foreground">No history yet</p>
                 </div>
               ) : (
                 <SidebarMenu>
-                  {displayHistory.map((item) => (
+                  {historyItems.map((item) => (
                     <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton 
                         asChild 
-                        className="hover:bg-sidebar-accent transition-all group relative"
+                        className={`hover:bg-sidebar-accent transition-all group relative ${
+                          currentHistoryId === item.id ? 'bg-sidebar-accent border-l-2 border-primary' : ''
+                        }`}
                       >
-                        <button className={`w-full text-left ${isCollapsed ? 'justify-center px-0' : ''}`}>
+                        <button 
+                          className={`w-full text-left ${isCollapsed ? 'justify-center px-0' : ''}`}
+                          onClick={() => onHistoryClick?.(item.id)}
+                        >
                           <div className="flex items-start gap-2 w-full">
                             <Sparkles className={`h-4 w-4 text-primary flex-shrink-0 group-hover:scale-110 transition-transform ${!isCollapsed ? 'mt-0.5' : ''}`} />
                             {!isCollapsed && (
                               <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium truncate text-sidebar-foreground group-hover:text-primary transition-colors">
+                                <div className={`text-sm font-medium truncate transition-colors ${
+                                  currentHistoryId === item.id ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'
+                                }`}>
                                   {item.title}
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-0.5">{item.time}</div>
-                                {item.prompt && (
-                                  <div className="text-xs text-muted-foreground/70 truncate mt-1 italic">
-                                    "{item.prompt}"
-                                  </div>
-                                )}
+                                <div className="text-xs text-muted-foreground/70 truncate mt-1 italic">
+                                  "{item.prompt}"
+                                </div>
                               </div>
                             )}
                           </div>

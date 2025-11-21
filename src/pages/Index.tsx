@@ -1,15 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Wand2, Loader2, Image as ImageIcon, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useOutletContext } from "react-router-dom";
+
+interface OutletContext {
+  saveToHistory: (images: Array<{ url: string; prompt: string; timestamp: number }>, prompt: string) => void;
+  currentHistoryId: number | null;
+  historyItems: Array<{ id: number; title: string; time: string; prompt: string; images: Array<{ url: string; prompt: string; timestamp: number }> }>;
+}
 
 const Index = () => {
+  const { saveToHistory, currentHistoryId, historyItems } = useOutletContext<OutletContext>();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<Array<{ url: string; prompt: string; timestamp: number }>>([]);
+
+  // Load history when currentHistoryId changes
+  useEffect(() => {
+    if (currentHistoryId !== null) {
+      const historyItem = historyItems.find(item => item.id === currentHistoryId);
+      if (historyItem) {
+        setGeneratedImages(historyItem.images);
+        setPrompt(historyItem.prompt);
+      }
+    } else {
+      // New chat - clear everything
+      setGeneratedImages([]);
+      setPrompt("");
+    }
+  }, [currentHistoryId, historyItems]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -31,7 +54,8 @@ const Index = () => {
           prompt: prompt,
           timestamp: Date.now()
         }));
-        setGeneratedImages(prev => [...newImages, ...prev]);
+        setGeneratedImages(newImages);
+        saveToHistory(newImages, prompt);
         toast.success("Image generated successfully!");
       } else {
         throw new Error("No images returned");
