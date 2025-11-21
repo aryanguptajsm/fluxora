@@ -1,9 +1,12 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Menu } from "lucide-react";
-import { Outlet } from "react-router-dom";
+import { Menu, LogIn } from "lucide-react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const MainLayout = () => {
+  const navigate = useNavigate();
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
@@ -19,10 +22,18 @@ const MainLayout = () => {
                 Fluxora AI Studio
               </h2>
             </div>
-            <div className="text-xs text-muted-foreground hidden sm:flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span>Ready to create</span>
+            <div className="text-xs text-muted-foreground hidden md:flex items-center gap-2 mr-4">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-glow"></span>
+              <span className="font-medium">Ready to create</span>
             </div>
+            <Button 
+              onClick={() => navigate('/auth')}
+              className="bg-gradient-primary hover:opacity-90 transition-all shadow-glow font-semibold"
+              size="sm"
+            >
+              <LogIn className="h-4 w-4 mr-2" />
+              Sign In
+            </Button>
           </header>
           
           {/* Main Content */}
