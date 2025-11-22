@@ -46,8 +46,7 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-foreground tracking-tight">Fluxora</span>
-              <span className="text-xs text-muted-foreground">AI Studio</span>
+              <span className="text-xl font-bold text-foreground tracking-tight">Fluxora AI</span>
             </div>
           )}
         </div>
@@ -79,7 +78,8 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
             <ScrollArea className="h-[400px]">
               {historyItems.length === 0 ? (
                 <div className="px-3 py-8 text-center">
-                  <p className="text-xs text-muted-foreground">No history yet</p>
+                  <p className="text-sm text-muted-foreground font-medium">No history yet</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Start creating images!</p>
                 </div>
               ) : (
                 <SidebarMenu>

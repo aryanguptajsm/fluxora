@@ -3,6 +3,7 @@ import { Wand2, Loader2, Image as ImageIcon, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useOutletContext } from "react-router-dom";
@@ -18,6 +19,7 @@ const Index = () => {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<Array<{ url: string; prompt: string; timestamp: number }>>([]);
+  const [progress, setProgress] = useState(0);
 
   // Load history when currentHistoryId changes
   useEffect(() => {
@@ -39,8 +41,18 @@ const Index = () => {
       toast.error("Please enter a prompt");
       return;
     }
-    
+
     setIsGenerating(true);
+    setProgress(0);
+    
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) return prev;
+        return prev + 10;
+      });
+    }, 500);
+
     try {
       const { data, error } = await supabase.functions.invoke('generate-image', {
         body: { prompt }
@@ -49,6 +61,8 @@ const Index = () => {
       if (error) throw error;
 
       if (data?.images) {
+        clearInterval(progressInterval);
+        setProgress(100);
         const newImages = (Array.isArray(data.images) ? data.images : [data.images]).map(img => ({
           ...img,
           prompt: prompt,
@@ -57,10 +71,12 @@ const Index = () => {
         setGeneratedImages(newImages);
         saveToHistory(newImages, prompt);
         toast.success("Image generated successfully!");
+        setPrompt(""); // Auto-clear prompt
       } else {
         throw new Error("No images returned");
       }
     } catch (error: any) {
+      clearInterval(progressInterval);
       console.error("Error generating image:", error);
       const errorMsg = error?.message || error?.error || "Failed to generate image";
       
@@ -73,6 +89,7 @@ const Index = () => {
       }
     } finally {
       setIsGenerating(false);
+      setProgress(0);
     }
   };
 
@@ -96,7 +113,7 @@ const Index = () => {
             <span className="text-sm font-bold bg-gradient-primary bg-clip-text text-transparent tracking-wide">Powered by Lovable AI</span>
           </div>
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight tracking-tight">
-            Fluxora Studio
+            Fluxora AI
           </h1>
           <p className="text-lg md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-3 leading-relaxed font-light">
             Transform your imagination into stunning visuals with AI
@@ -175,7 +192,10 @@ const Index = () => {
               <Wand2 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-10 w-10 text-primary animate-pulse" />
             </div>
             <p className="mt-8 text-lg font-medium text-muted-foreground">Crafting your vision...</p>
-            <p className="mt-2 text-sm text-muted-foreground/70">This may take a moment</p>
+            <div className="w-full max-w-md mt-6">
+              <Progress value={progress} className="h-3" />
+              <p className="text-center text-sm text-muted-foreground mt-3 font-medium">{progress}%</p>
+            </div>
           </div>
         )}
 
