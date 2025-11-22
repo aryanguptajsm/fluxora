@@ -3,7 +3,10 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Menu, LogIn } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 interface HistoryItem {
   id: number;
@@ -17,6 +20,21 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [currentHistoryId, setCurrentHistoryId] = useState<number | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const saveToHistory = (images: Array<{ url: string; prompt: string; timestamp: number }>, prompt: string) => {
     const newId = Date.now();
@@ -39,6 +57,14 @@ const MainLayout = () => {
     setCurrentHistoryId(null);
   };
 
+  const handleDeleteHistory = (id: number) => {
+    setHistoryItems(prev => prev.filter(item => item.id !== id));
+    if (currentHistoryId === id) {
+      setCurrentHistoryId(null);
+    }
+    toast.success("History item deleted");
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
@@ -47,6 +73,7 @@ const MainLayout = () => {
           onHistoryClick={loadFromHistory}
           onNewChat={startNewChat}
           currentHistoryId={currentHistoryId}
+          onDeleteHistory={handleDeleteHistory}
         />
         <div className="flex-1 flex flex-col">
           {/* Header with Sidebar Toggle */}
@@ -56,21 +83,23 @@ const MainLayout = () => {
             </SidebarTrigger>
             <div className="flex-1">
               <h2 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Fluxora AI Studio
+                Fluxora AI
               </h2>
             </div>
             <div className="text-xs text-muted-foreground hidden md:flex items-center gap-2 mr-4">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-glow"></span>
               <span className="font-medium">Ready to create</span>
             </div>
-            <Button 
-              onClick={() => navigate('/auth')}
-              className="bg-gradient-primary hover:opacity-90 transition-all shadow-glow font-semibold"
-              size="sm"
-            >
-              <LogIn className="h-4 w-4 mr-2" />
-              Sign In
-            </Button>
+            {!user && (
+              <Button 
+                onClick={() => navigate('/auth')}
+                className="bg-gradient-primary hover:opacity-90 transition-all shadow-glow font-semibold"
+                size="sm"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+            )}
           </header>
           
           {/* Main Content */}
