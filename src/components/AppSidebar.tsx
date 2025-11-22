@@ -1,4 +1,4 @@
-import { Plus, History, Sparkles } from "lucide-react";
+import { Plus, History, Sparkles, Clock } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -66,8 +66,14 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
 
         <SidebarGroup>
           <SidebarGroupLabel className={`text-xs uppercase tracking-wider text-muted-foreground px-3 ${isCollapsed ? 'justify-center' : ''}`}>
-            <History className={`h-3 w-3 inline ${!isCollapsed ? 'mr-2' : ''}`} />
-            {!isCollapsed && <span className="font-semibold">Recent</span>}
+            {isCollapsed ? (
+              <Clock className="h-4 w-4" />
+            ) : (
+              <>
+                <History className="h-3 w-3 inline mr-2" />
+                <span className="font-semibold">Recent</span>
+              </>
+            )}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <ScrollArea className="h-[400px]">
