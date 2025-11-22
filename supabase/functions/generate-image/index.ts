@@ -40,13 +40,10 @@ serve(async (req) => {
 
     const client = new HfInference(HF_TOKEN);
     
-    // Generate image using the new router endpoint
+    // Generate image using Stable Diffusion model
     const image = await client.textToImage({
-      model: "black-forest-labs/FLUX.1-schnell",
+      model: "runwayml/stable-diffusion-v1-5",
       inputs: prompt,
-      parameters: {
-        num_inference_steps: 4,
-      },
     });
 
     console.log("Image generated successfully");
