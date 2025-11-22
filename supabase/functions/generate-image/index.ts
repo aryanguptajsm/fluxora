@@ -37,9 +37,9 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Use the new Hugging Face router endpoint directly
+    // Use the Hugging Face inference endpoint for stable-diffusion
     const response = await fetch(
-      "https://router.huggingface.co/text-to-image",
+      "https://router.huggingface.co/hf-inference/models/runwayml/stable-diffusion-v1-5",
       {
         method: "POST",
         headers: {
@@ -47,8 +47,7 @@ serve(async (req) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ 
-          inputs: prompt,
-          model: "runwayml/stable-diffusion-v1-5"
+          inputs: prompt
         })
       }
     );
