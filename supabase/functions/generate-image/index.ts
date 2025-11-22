@@ -23,9 +23,9 @@ serve(async (req) => {
       );
     }
 
-    const HF_TOKEN = Deno.env.get('HF_TOKEN');
-    if (!HF_TOKEN) {
-      console.error('HF_TOKEN is not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY is not configured');
       return new Response(
         JSON.stringify({ error: 'API key not configured' }), 
         { 
@@ -37,33 +37,64 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Use the Hugging Face inference endpoint for stable-diffusion
+    // Use Lovable AI Gateway for image generation with Gemini
     const response = await fetch(
-      "https://router.huggingface.co/hf-inference/models/runwayml/stable-diffusion-v1-5",
+      "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${HF_TOKEN}`,
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ 
-          inputs: prompt
+          model: "google/gemini-2.5-flash-image",
+          messages: [
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          modalities: ["image", "text"]
         })
       }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Hugging Face API error:', response.status, errorText);
+      console.error('Lovable AI Gateway error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+          { 
+            status: 429, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+      
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
+          { 
+            status: 402, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+      
       throw new Error(`API request failed: ${response.status}`);
     }
 
+    const data = await response.json();
     console.log("Image generated successfully");
 
-    // Convert response to base64
-    const arrayBuffer = await response.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-    const imageUrl = `data:image/png;base64,${base64}`;
+    // Extract the base64 image from the response
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    if (!imageUrl) {
+      throw new Error('No image returned from API');
+    }
 
     return new Response(
       JSON.stringify({ 
