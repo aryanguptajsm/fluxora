@@ -60,9 +60,17 @@ const Index = () => {
       } else {
         throw new Error("No images returned");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating image:", error);
-      toast.error(error.message || "Failed to generate image");
+      const errorMsg = error?.message || error?.error || "Failed to generate image";
+      
+      if (errorMsg.includes("Rate limit")) {
+        toast.error("Rate limit exceeded. Please try again in a moment.");
+      } else if (errorMsg.includes("Payment required")) {
+        toast.error("Please add credits to your workspace to continue.");
+      } else {
+        toast.error(errorMsg);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -85,7 +93,7 @@ const Index = () => {
         <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-card border border-primary/40 mb-8 shadow-glow backdrop-blur-sm hover:border-primary/60 transition-all">
             <Wand2 className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-bold bg-gradient-primary bg-clip-text text-transparent tracking-wide">Powered by FLUX.1-Schnell</span>
+            <span className="text-sm font-bold bg-gradient-primary bg-clip-text text-transparent tracking-wide">Powered by Lovable AI</span>
           </div>
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight tracking-tight">
             Fluxora Studio
@@ -272,7 +280,7 @@ const Index = () => {
               </div>
             </div>
             <div className="text-center text-sm text-muted-foreground">
-              <p>© 2025 Fluxora. Powered by FLUX.1-Schnell Technology.</p>
+              <p>© 2025 Fluxora. Powered by Lovable AI & Google Gemini.</p>
               <p className="text-xs mt-1">Create stunning images with lightning-fast AI</p>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
