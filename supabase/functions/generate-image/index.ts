@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { HfInference } from "https://esm.sh/@huggingface/inference@2.8.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -38,18 +37,32 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    const client = new HfInference(HF_TOKEN);
-    
-    // Generate image using Stable Diffusion model
-    const image = await client.textToImage({
-      model: "runwayml/stable-diffusion-v1-5",
-      inputs: prompt,
-    });
+    // Use the new Hugging Face router endpoint directly
+    const response = await fetch(
+      "https://router.huggingface.co/text-to-image",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+          inputs: prompt,
+          model: "runwayml/stable-diffusion-v1-5"
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Hugging Face API error:', response.status, errorText);
+      throw new Error(`API request failed: ${response.status}`);
+    }
 
     console.log("Image generated successfully");
 
-    // Convert blob to base64
-    const arrayBuffer = await image.arrayBuffer();
+    // Convert response to base64
+    const arrayBuffer = await response.arrayBuffer();
     const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
     const imageUrl = `data:image/png;base64,${base64}`;
 
