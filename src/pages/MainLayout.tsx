@@ -1,12 +1,12 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Menu, LogIn } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface HistoryItem {
   id: number;
@@ -90,16 +90,7 @@ const MainLayout = () => {
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-glow"></span>
               <span className="font-medium">Ready to create</span>
             </div>
-            {!user && (
-              <Button 
-                onClick={() => navigate('/auth')}
-                className="bg-gradient-primary hover:opacity-90 transition-all shadow-glow font-semibold"
-                size="sm"
-              >
-                <LogIn className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-            )}
+            <ThemeToggle />
           </header>
           
           {/* Main Content */}
