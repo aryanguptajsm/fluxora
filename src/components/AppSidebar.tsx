@@ -137,7 +137,7 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
                     <div className="px-3 py-8 text-center">
                       <History className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
                       <p className="text-sm text-muted-foreground font-medium">No history yet</p>
-                      <p className="text-xs text-muted-foreground/70 mt-1">Start creating images!</p>
+                      <p className="text-xs text-muted-foreground mt-1">Start creating images!</p>
                     </div>
                   ) : (
                     <SidebarMenu>
@@ -167,7 +167,7 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
                                           {item.title}
                                         </div>
                                         <div className="text-xs text-muted-foreground mt-0.5">{item.time}</div>
-                                        <div className="text-xs text-muted-foreground/70 truncate mt-1 italic">
+                                        <div className="text-xs text-muted-foreground truncate mt-1 italic">
                                           "{item.prompt}"
                                         </div>
                                       </div>
