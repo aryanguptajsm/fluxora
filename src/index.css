@@ -121,3 +121,16 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Performance optimizations to reduce forced reflows */
+@layer utilities {
+  .will-change-scroll {
+    will-change: scroll-position;
+    contain: layout style paint;
+  }
+  
+  .transform-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
