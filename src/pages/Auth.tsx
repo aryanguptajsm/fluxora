@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wand2, Mail, Lock, User, ArrowRight, Sparkles } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Session } from "@supabase/supabase-js";
+import fluxoraLogo from "@/assets/fluxora-logo.png";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -114,8 +115,8 @@ const Auth = () => {
         <div className="p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-primary shadow-glow mb-4">
-              <Wand2 className="h-8 w-8 text-primary-foreground" />
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-4">
+              <img src={fluxoraLogo} alt="Fluxora Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
               Welcome to Fluxora

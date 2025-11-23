@@ -84,8 +84,8 @@ const Signup = () => {
           {/* Logo */}
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-glow">
-                <img src={logo} alt="Fluxora" className="w-12 h-12" />
+              <div className="w-20 h-20 flex items-center justify-center">
+                <img src={logo} alt="Fluxora" className="w-full h-full object-contain" />
               </div>
             </div>
             <div>
