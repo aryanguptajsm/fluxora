@@ -178,17 +178,15 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
                                   ) : (
                                     <div className="flex items-start gap-2 w-full min-w-0">
                                       <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform mt-0.5" />
-                                      <div className="flex-1 min-w-0 space-y-1">
-                                        <div className={`text-sm font-medium transition-colors ${
-                                          currentHistoryId === item.id ? 'text-primary' : 'text-sidebar-foreground group-hover/item:text-primary'
-                                        }`}>
-                                          <div className="flex items-center gap-1 mb-1">
-                                            {isPinned && <Pin className="h-3 w-3 text-primary flex-shrink-0" />}
-                                            <span className="truncate block">{item.title}</span>
-                                          </div>
-                                          <div className="text-xs text-muted-foreground font-normal">{item.time}</div>
+                                      <div className="flex-1 min-w-0 space-y-0.5">
+                                        <div className="flex items-center gap-1 min-w-0">
+                                          {isPinned && <Pin className="h-3 w-3 text-primary flex-shrink-0" />}
+                                          <span className={`text-sm font-medium truncate transition-colors ${
+                                            currentHistoryId === item.id ? 'text-primary' : 'text-sidebar-foreground group-hover/item:text-primary'
+                                          }`}>{item.title}</span>
                                         </div>
-                                        <div className="text-xs text-muted-foreground/80 leading-relaxed line-clamp-2">
+                                        <div className="text-xs text-muted-foreground">{item.time}</div>
+                                        <div className="text-xs text-muted-foreground/70 line-clamp-2 leading-snug">
                                           {item.prompt}
                                         </div>
                                       </div>
