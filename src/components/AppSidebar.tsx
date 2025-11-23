@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, History, Sparkles, Clock, LogOut, Search, Trash2, ChevronDown, Pin } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, History, Sparkles, Clock, LogOut, Search, Trash2, ChevronDown, Pin, LogIn } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -14,7 +14,6 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
@@ -22,6 +21,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { User } from "@supabase/supabase-js";
 
 interface HistoryItem {
   id: number;
@@ -46,15 +46,32 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
   const [historyOpen, setHistoryOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [pinnedItems, setPinnedItems] = useState<number[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
       toast.success("Signed out successfully");
-      navigate("/login");
+      navigate("/auth");
     } catch (error) {
       toast.error("Failed to sign out");
     }
+  };
+
+  const handleSignIn = () => {
+    navigate("/auth");
   };
 
   const togglePin = (id: number) => {
@@ -215,20 +232,26 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
         </Collapsible>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-4 space-y-3">
-        <div className={`flex items-center gap-2 ${isCollapsed ? 'justify-center flex-col' : 'justify-between'}`}>
-          {!isCollapsed && <span className="text-xs text-muted-foreground font-semibold">Theme</span>}
-          <ThemeToggle />
-        </div>
-        
-        <Button
-          variant="outline"
-          className={`w-full bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20 ${isCollapsed ? 'px-0 justify-center' : ''}`}
-          onClick={handleSignOut}
-        >
-          <LogOut className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
-          {!isCollapsed && <span className="font-medium">Sign Out</span>}
-        </Button>
+      <SidebarFooter className="border-t border-sidebar-border p-4">
+        {user ? (
+          <Button
+            variant="outline"
+            className={`w-full bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20 ${isCollapsed ? 'px-0 justify-center' : ''}`}
+            onClick={handleSignOut}
+          >
+            <LogOut className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
+            {!isCollapsed && <span className="font-medium">Sign Out</span>}
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            className={`w-full bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 ${isCollapsed ? 'px-0 justify-center' : ''}`}
+            onClick={handleSignIn}
+          >
+            <LogIn className={`h-4 w-4 ${!isCollapsed ? 'mr-2' : ''}`} />
+            {!isCollapsed && <span className="font-medium">Sign In</span>}
+          </Button>
+        )}
       </SidebarFooter>
     </Sidebar>
   );
