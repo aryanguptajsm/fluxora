@@ -71,7 +71,6 @@ const Index = () => {
         setGeneratedImages(newImages);
         saveToHistory(newImages, prompt);
         toast.success("Image generated successfully!");
-        setPrompt(""); // Auto-clear prompt
       } else {
         throw new Error("No images returned");
       }

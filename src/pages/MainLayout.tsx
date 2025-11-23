@@ -38,15 +38,17 @@ const MainLayout = () => {
 
   const saveToHistory = (images: Array<{ url: string; prompt: string; timestamp: number }>, prompt: string) => {
     const newId = Date.now();
+    const date = new Date();
+    const timeString = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     const newItem: HistoryItem = {
       id: newId,
-      title: prompt.substring(0, 30) + (prompt.length > 30 ? '...' : ''),
-      time: 'Just now',
+      title: prompt.substring(0, 40) + (prompt.length > 40 ? '...' : ''),
+      time: timeString,
       prompt,
       images
     };
     setHistoryItems(prev => [newItem, ...prev]);
-    setCurrentHistoryId(newId);
+    // Don't auto-set currentHistoryId - only set when clicking history
   };
 
   const loadFromHistory = (historyId: number) => {
