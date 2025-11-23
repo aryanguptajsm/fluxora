@@ -173,23 +173,25 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
                                   className={`w-full text-left ${isCollapsed ? 'justify-center px-0' : 'pr-20'}`}
                                   onClick={() => onHistoryClick?.(item.id)}
                                 >
-                                  <div className="flex items-start gap-2 w-full">
-                                    <Sparkles className={`h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform ${!isCollapsed ? 'mt-0.5' : ''}`} />
-                                    {!isCollapsed && (
-                                       <div className="flex-1 min-w-0">
+                                  {isCollapsed ? (
+                                    <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform" />
+                                  ) : (
+                                    <div className="flex items-start gap-2 w-full min-w-0">
+                                      <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform mt-0.5" />
+                                      <div className="flex-1 min-w-0">
                                         <div className={`text-sm font-medium truncate transition-colors flex items-center gap-1 ${
                                           currentHistoryId === item.id ? 'text-primary' : 'text-sidebar-foreground group-hover/item:text-primary'
                                         }`}>
-                                          {isPinned && <Pin className="h-3 w-3 text-primary" />}
-                                          {item.title}
+                                          {isPinned && <Pin className="h-3 w-3 text-primary flex-shrink-0" />}
+                                          <span className="truncate">{item.title}</span>
                                         </div>
-                                        <div className="text-xs text-muted-foreground mt-0.5">{item.time}</div>
+                                        <div className="text-xs text-muted-foreground mt-0.5 truncate">{item.time}</div>
                                         <div className="text-xs text-muted-foreground truncate mt-1 italic">
                                           "{item.prompt}"
                                         </div>
                                       </div>
-                                    )}
-                                  </div>
+                                    </div>
+                                  )}
                                 </button>
                               </SidebarMenuButton>
                               
