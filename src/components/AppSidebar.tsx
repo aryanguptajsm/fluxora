@@ -123,12 +123,12 @@ export function AppSidebar({ historyItems = [], onHistoryClick, onNewChat, curre
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className={`w-full flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground px-3 hover:bg-sidebar-accent rounded-md transition-colors ${isCollapsed ? 'justify-center' : ''}`}>
-                <div className="flex items-center gap-2">
-                  <History className="h-4 w-4" />
-                  {!isCollapsed && <span className="font-semibold">History</span>}
+                <div className="flex items-center gap-2 min-w-0">
+                  <History className="h-4 w-4 flex-shrink-0" />
+                  {!isCollapsed && <span className="font-semibold truncate">History</span>}
                 </div>
                 {!isCollapsed && (
-                  <ChevronDown className={`h-4 w-4 transition-transform ${historyOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${historyOpen ? 'rotate-180' : ''}`} />
                 )}
               </CollapsibleTrigger>
             </SidebarGroupLabel>
