@@ -20,6 +20,7 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<Array<{ url: string; prompt: string; timestamp: number }>>([]);
   const [progress, setProgress] = useState(0);
+  const [previousHistoryId, setPreviousHistoryId] = useState<number | null>(null);
 
   // Load history when currentHistoryId changes
   useEffect(() => {
@@ -29,11 +30,12 @@ const Index = () => {
         setGeneratedImages(historyItem.images);
         setPrompt(historyItem.prompt);
       }
-    } else {
-      // New chat - clear everything
+    } else if (previousHistoryId !== null && currentHistoryId === null) {
+      // User clicked "New Chat" - clear everything
       setGeneratedImages([]);
       setPrompt("");
     }
+    setPreviousHistoryId(currentHistoryId);
   }, [currentHistoryId, historyItems]);
 
   const handleGenerate = async () => {
