@@ -137,15 +137,15 @@ export function AppSidebar({
                             <div className={`group/item hover:bg-sidebar-accent transition-all relative ${currentHistoryId === item.id ? 'bg-sidebar-accent border-l-2 border-primary' : ''}`}>
                               <SidebarMenuButton asChild className="hover:bg-transparent">
                                 <button className={`w-full text-left ${isCollapsed ? 'justify-center px-0' : 'pr-20'}`} onClick={() => onHistoryClick?.(item.id)}>
-                                  {isCollapsed ? <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform" /> : <div className="flex items-start gap-2 w-full min-w-0">
-                                      <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform mt-0.5" />
-                                      <div className="flex-1 min-w-0 space-y-0.5">
-                                        <div className="flex items-center gap-1 min-w-0">
+                                  {isCollapsed ? <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform" /> : <div className="flex items-start gap-2.5 w-full min-w-0">
+                                      <Sparkles className="h-4 w-4 text-primary flex-shrink-0 group-hover/item:scale-110 transition-transform mt-1" />
+                                      <div className="flex-1 min-w-0 space-y-1">
+                                        <div className="flex items-center gap-1.5 min-w-0">
                                           {isPinned && <Pin className="h-3 w-3 text-primary flex-shrink-0" />}
-                                          <span className={`text-sm font-medium truncate transition-colors ${currentHistoryId === item.id ? 'text-primary' : 'text-sidebar-foreground group-hover/item:text-primary'}`}>{item.title}</span>
+                                          <span className={`text-sm font-semibold truncate block transition-colors ${currentHistoryId === item.id ? 'text-primary' : 'text-sidebar-foreground group-hover/item:text-primary'}`}>{item.title}</span>
                                         </div>
-                                        <div className="text-xs text-muted-foreground">{item.time}</div>
-                                        <div className="text-xs text-muted-foreground/70 line-clamp-2 leading-snug">
+                                        <div className="text-xs text-muted-foreground font-medium">{item.time}</div>
+                                        <div className="text-xs text-muted-foreground/70 line-clamp-2 leading-relaxed mt-0.5">
                                           {item.prompt}
                                         </div>
                                       </div>
