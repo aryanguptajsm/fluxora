@@ -300,7 +300,7 @@ const Index = () => {
             </div>
             <div className="text-center text-sm text-muted-foreground">
               <p>© 2025 Fluxora. Powered by Lovable AI & Google Gemini.</p>
-              <p className="text-xs mt-1">Create stunning images with lightning-fast AI</p>
+              <p className="text-xs mt-1">Created by @aryangupta026</p>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
