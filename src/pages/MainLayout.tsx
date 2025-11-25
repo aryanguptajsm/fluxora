@@ -57,6 +57,7 @@ const MainLayout = () => {
 
   const startNewChat = () => {
     setCurrentHistoryId(null);
+    // Clear images and prompt in the Index component will be handled there
   };
 
   const handleDeleteHistory = (id: number) => {
