@@ -37,7 +37,7 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Use Lovable AI Gateway for image generation with Gemini
+    // Use Lovable AI Gateway for image generation with Gemini //
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
