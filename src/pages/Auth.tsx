@@ -10,6 +10,21 @@ import { toast } from "sonner";
 import { Session } from "@supabase/supabase-js";
 import fluxoraLogo from "@/assets/fluxora-logo.svg";
 
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === "object" && error !== null && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+  }
+
+  return fallback;
+};
+
 const Auth = () => {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
@@ -70,8 +85,8 @@ const Auth = () => {
       setEmail("");
       setPassword("");
       setUsername("");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign up");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Failed to sign up"));
     } finally {
       setLoading(false);
     }
@@ -96,8 +111,8 @@ const Auth = () => {
       
       toast.success("Signed in successfully!");
       navigate("/");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign in");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Failed to sign in"));
     } finally {
       setLoading(false);
     }

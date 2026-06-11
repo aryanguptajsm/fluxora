@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Wand2, Loader2, Image as ImageIcon, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,7 +20,7 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<Array<{ url: string; prompt: string; timestamp: number }>>([]);
   const [progress, setProgress] = useState(0);
-  const [previousHistoryId, setPreviousHistoryId] = useState<number | null>(null);
+  const previousHistoryId = useRef<number | null>(null);
 
   // Load history when currentHistoryId changes
   useEffect(() => {
@@ -30,13 +30,13 @@ const Index = () => {
         setGeneratedImages(historyItem.images);
         setPrompt(historyItem.prompt);
       }
-    } else if (previousHistoryId !== null && currentHistoryId === null) {
+    } else if (previousHistoryId.current !== null && currentHistoryId === null) {
       // User clicked "New Chat" - clear everything
       setGeneratedImages([]);
       setPrompt("");
     }
-    setPreviousHistoryId(currentHistoryId);
-  }, [currentHistoryId, historyItems]);
+    previousHistoryId.current = currentHistoryId;
+  }, [currentHistoryId, historyItems, previousHistoryId]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -76,10 +76,17 @@ const Index = () => {
       } else {
         throw new Error("No images returned");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearInterval(progressInterval);
       console.error("Error generating image:", error);
-      const errorMsg = error?.message || error?.error || "Failed to generate image";
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : typeof error === "object" && error !== null && "message" in error
+            ? String((error as { message?: unknown }).message || "Failed to generate image")
+            : typeof error === "object" && error !== null && "error" in error
+              ? String((error as { error?: unknown }).error || "Failed to generate image")
+              : "Failed to generate image";
       
       if (errorMsg.includes("Rate limit")) {
         toast.error("Rate limit exceeded. Please try again in a moment.");
