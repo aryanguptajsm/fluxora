@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/fluxora-logo.png";
+import logo from "@/assets/fluxora-logo.svg";
 
 const Signup = () => {
   const [username, setUsername] = useState("");

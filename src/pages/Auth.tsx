@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Lock, User, ArrowRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Session } from "@supabase/supabase-js";
-import fluxoraLogo from "@/assets/fluxora-logo.png";
+import fluxoraLogo from "@/assets/fluxora-logo.svg";
 
 const Auth = () => {
   const navigate = useNavigate();
