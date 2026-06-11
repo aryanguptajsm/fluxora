@@ -23,9 +23,10 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      console.error('LOVABLE_API_KEY is not configured');
+    const IMAGE_GATEWAY_API_KEY =
+      Deno.env.get('IMAGE_GATEWAY_API_KEY') ?? Deno.env.get('LOVABLE_API_KEY');
+    if (!IMAGE_GATEWAY_API_KEY) {
+      console.error('IMAGE_GATEWAY_API_KEY is not configured');
       return new Response(
         JSON.stringify({ error: 'API key not configured' }), 
         { 
@@ -37,13 +38,13 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Use Lovable AI Gateway for image generation with Gemini //
+    // Send the prompt to the image generation gateway.
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "Authorization": `Bearer ${IMAGE_GATEWAY_API_KEY}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ 
@@ -61,7 +62,7 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Lovable AI Gateway error:', response.status, errorText);
+      console.error('Image gateway error:', response.status, errorText);
       
       if (response.status === 429) {
         return new Response(

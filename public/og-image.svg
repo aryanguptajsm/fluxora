@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1200" y1="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09090b" />
+      <stop offset="0.45" stop-color="#111827" />
+      <stop offset="1" stop-color="#1f2937" />
+    </linearGradient>
+    <linearGradient id="accent" x1="310" x2="910" y1="160" y2="470" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7c3aed" />
+      <stop offset="0.5" stop-color="#06b6d4" />
+      <stop offset="1" stop-color="#22c55e" />
+    </linearGradient>
+    <filter id="blur" width="120%" height="120%" x="-10%" y="-10%">
+      <feGaussianBlur stdDeviation="30" />
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" rx="48" />
+  <circle cx="960" cy="140" r="120" fill="#7c3aed" opacity="0.2" filter="url(#blur)" />
+  <circle cx="250" cy="510" r="150" fill="#06b6d4" opacity="0.18" filter="url(#blur)" />
+  <circle cx="1040" cy="500" r="100" fill="#22c55e" opacity="0.14" filter="url(#blur)" />
+  <rect x="88" y="84" width="1024" height="462" rx="32" fill="white" fill-opacity="0.04" stroke="white" stroke-opacity="0.08" />
+  <g transform="translate(118 136)">
+    <rect x="0" y="0" width="86" height="86" rx="24" fill="url(#accent)" />
+    <path d="M24 45.5L39 30.5L50.5 42L62 30.5" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M24 58H62" stroke="#fff" stroke-width="6" stroke-linecap="round" />
+  </g>
+  <text x="118" y="320" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="82" font-weight="700" letter-spacing="-1.5">Fluxora AI</text>
+  <text x="118" y="382" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="400">
+    AI image generation studio
+  </text>
+  <g transform="translate(118 436)">
+    <rect width="188" height="44" rx="22" fill="white" fill-opacity="0.08" />
+    <text x="94" y="29" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600" text-anchor="middle">Create in seconds</text>
+  </g>
+</svg>
